@@ -1,18 +1,18 @@
 package com.koushikdutta.http;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 
 import com.codebutler.android_websockets.WebSocketClient;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 
@@ -76,14 +76,13 @@ public class AsyncHttpClient {
                         stringCallback.onCompleted(null, responseString);
                     }
 
-                } catch (IOException e) {
+                } catch (Exception e) {
 
                     if (stringCallback != null) {
                         stringCallback.onCompleted(e, null);
                     }
                 } finally {
                     httpClient.close();
-                    httpClient = null;
                 }
                 return null;
             }
