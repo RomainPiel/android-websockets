@@ -1,18 +1,26 @@
 package com.koushikdutta.http;
 
 import android.net.Uri;
-import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 
 import com.codebutler.android_websockets.WebSocketClient;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.SingleClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyStore;
 
 /**
  * 
@@ -63,12 +71,23 @@ public class AsyncHttpClient {
         new AsyncTask<Void, Void, Void>() {
 
             @Override
-            protected Void doInBackground(Void... params) {
+            protected Void doInBackground(Void... p) {
 
-                AndroidHttpClient httpClient = AndroidHttpClient.newInstance("android-websockets-2.0");
-                HttpPost post = new HttpPost(socketIORequest.getUri());
+                SSLSocketFactory sf = SSLSocketFactory.getSocketFactory();
+                sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+
+                SchemeRegistry schemeRegistry = new SchemeRegistry();
+                schemeRegistry.register(new Scheme("https", sf, 443));
+
+                HttpParams params = new BasicHttpParams();
+
+                SingleClientConnManager mgr = new SingleClientConnManager(params, schemeRegistry);
+                HttpClient httpClient = new DefaultHttpClient(mgr, params);
 
                 try {
+
+                    HttpPost post = new HttpPost(socketIORequest.getUri());
+
                     HttpResponse res = httpClient.execute(post);
                     String responseString = readToEnd(res.getEntity().getContent());
 
@@ -82,7 +101,7 @@ public class AsyncHttpClient {
                         stringCallback.onCompleted(e, null);
                     }
                 } finally {
-                    httpClient.close();
+                    httpClient.getConnectionManager().shutdown();
                 }
                 return null;
             }
