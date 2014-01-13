@@ -20,10 +20,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.KeyStore;
 
 /**
- * 
  * Created by Vinay S Shenoy on 07/09/2013
  */
 public class AsyncHttpClient {
@@ -74,7 +72,8 @@ public class AsyncHttpClient {
             protected Void doInBackground(Void... p) {
 
                 SSLSocketFactory sf = SSLSocketFactory.getSocketFactory();
-                sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+                // enable that to bypass SSL check (debug only)
+                // sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
                 SchemeRegistry schemeRegistry = new SchemeRegistry();
                 schemeRegistry.register(new Scheme("https", sf, 443));
