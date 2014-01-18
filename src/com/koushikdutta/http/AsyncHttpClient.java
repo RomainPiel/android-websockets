@@ -1,20 +1,13 @@
 package com.koushikdutta.http;
 
 import android.net.Uri;
+import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 
 import com.codebutler.android_websockets.WebSocketClient;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.SingleClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -71,17 +64,7 @@ public class AsyncHttpClient {
             @Override
             protected Void doInBackground(Void... p) {
 
-                SSLSocketFactory sf = SSLSocketFactory.getSocketFactory();
-                // enable that to bypass SSL check (debug only)
-                // sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-                SchemeRegistry schemeRegistry = new SchemeRegistry();
-                schemeRegistry.register(new Scheme("https", sf, 443));
-
-                HttpParams params = new BasicHttpParams();
-
-                SingleClientConnManager mgr = new SingleClientConnManager(params, schemeRegistry);
-                HttpClient httpClient = new DefaultHttpClient(mgr, params);
+                AndroidHttpClient httpClient = AndroidHttpClient.newInstance("android-websockets-2.0");
 
                 try {
 
