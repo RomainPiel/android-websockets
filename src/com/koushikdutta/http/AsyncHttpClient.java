@@ -84,6 +84,7 @@ public class AsyncHttpClient {
                     }
                 } finally {
                     httpClient.getConnectionManager().shutdown();
+                    httpClient.close();
                 }
                 return null;
             }
